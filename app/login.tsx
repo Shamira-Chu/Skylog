@@ -2,25 +2,14 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions,
 import { useRouter, Stack } from "expo-router";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useAuth } from "../context/AuthContext";
 
 const { width } = Dimensions.get("window");
 
-export default function Signup() {
+export default function Login() {
   const router = useRouter();
-  const { setUserName } = useAuth();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleSignup = () => {
-    if (name.trim()) {
-      setUserName(name);
-    }
-    router.replace("/(tabs)");
-  };
 
   return (
     <View style={styles.container}>
@@ -33,13 +22,8 @@ export default function Signup() {
           style={styles.planeImage} 
         />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>Cadastre-se</Text>
-          <View style={styles.loginRedirect}>
-            <Text style={styles.headerSubtitle}>Já possui uma conta?</Text>
-            <TouchableOpacity onPress={() => router.push("/login")}>
-              <Text style={styles.loginLink}> Entrar</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.headerTitle}>Faça login na{"\n"}sua conta.</Text>
+          <Text style={styles.headerSubtitle}>Insira seu email e senha para entrar.</Text>
         </View>
       </View>
 
@@ -47,19 +31,19 @@ export default function Signup() {
       <View style={styles.formContainer}>
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           <View style={styles.card}>
-            
-            {/* INPUTS */}
-            <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>Nome Completo</Text>
-              <TextInput
-                placeholder="Thiago Fiap"
-                value={name}
-                onChangeText={setName}
-                style={styles.input}
-                placeholderTextColor="#94A3B8"
-              />
+            {/* GOOGLE LOGIN */}
+            <TouchableOpacity style={styles.googleButton}>
+              <MaterialCommunityIcons name="google" size={20} color="#EA4335" />
+              <Text style={styles.googleButtonText}>Entrar com Google</Text>
+            </TouchableOpacity>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>Ou entre por email</Text>
+              <View style={styles.divider} />
             </View>
 
+            {/* INPUTS */}
             <View style={styles.inputWrapper}>
               <Text style={styles.inputLabel}>Email</Text>
               <TextInput
@@ -73,7 +57,7 @@ export default function Signup() {
 
             <View style={styles.inputWrapper}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.inputLabel}>Insira uma senha</Text>
+                <Text style={styles.inputLabel}>Senha</Text>
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                   <MaterialCommunityIcons 
                     name={showPassword ? "eye-off-outline" : "eye-outline"} 
@@ -92,45 +76,30 @@ export default function Signup() {
               />
             </View>
 
-            <View style={styles.inputWrapper}>
-              <Text style={styles.inputLabel}>Confirme sua senha</Text>
-              <TextInput
-                placeholder="*******"
-                value={confirmPassword}
-                secureTextEntry={!showPassword}
-                onChangeText={setConfirmPassword}
-                style={styles.input}
-                placeholderTextColor="#94A3B8"
-              />
-            </View>
-
             <View style={styles.extraActions}>
               <TouchableOpacity style={styles.checkboxContainer}>
                 <View style={styles.checkbox} />
                 <Text style={styles.checkboxLabel}>Lembrar-me</Text>
               </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
+              </TouchableOpacity>
             </View>
 
             {/* MAIN ACTION */}
             <TouchableOpacity
-              onPress={handleSignup}
-              style={styles.signupButton}
+              onPress={() => router.replace("/(tabs)")}
+              style={styles.loginButton}
             >
-              <Text style={styles.signupButtonText}>Cadastrar-se</Text>
+              <Text style={styles.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
 
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>Ou cadastre-se com</Text>
-              <View style={styles.divider} />
+            <View style={styles.signupPrompt}>
+              <Text style={styles.signupText}>Não tem uma conta?</Text>
+              <TouchableOpacity onPress={() => router.push("/signup")}>
+                <Text style={styles.signupLink}> Cadastre-se</Text>
+              </TouchableOpacity>
             </View>
-
-            {/* GOOGLE LOGIN */}
-            <TouchableOpacity style={styles.googleButton}>
-              <MaterialCommunityIcons name="google" size={20} color="#EA4335" />
-              <Text style={styles.googleButtonText}>Cadastre-se com Google</Text>
-            </TouchableOpacity>
-
           </View>
         </ScrollView>
       </View>
@@ -144,11 +113,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B1E8A",
   },
   header: {
-    minHeight: 200,
+    minHeight: 250,
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 40,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   planeImage: {
     width: width * 0.65,
@@ -158,27 +127,19 @@ const styles = StyleSheet.create({
   },
   headerTextContainer: {
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
+    lineHeight: 38,
   },
   headerSubtitle: {
     color: "rgba(255,255,255,0.7)",
-    fontSize: 12,
-  },
-  loginRedirect: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 0,
-  },
-  loginLink: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 13,
+    fontSize: 14,
+    marginTop: 10,
   },
   formContainer: {
     flex: 1,
@@ -189,58 +150,28 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    paddingTop: 10,
   },
-  inputWrapper: {
-    marginBottom: 15,
-  },
-  inputLabel: {
-    color: "#1E293B",
-    fontSize: 13,
-    fontWeight: "600",
-    marginBottom: 5,
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#0B1E8A",
-    paddingVertical: 8,
-    fontSize: 15,
-    color: "#1E293B",
-  },
-  extraActions: {
-    marginVertical: 15,
-  },
-  checkboxContainer: {
+  googleButton: {
     flexDirection: "row",
-    alignItems: "center",
-  },
-  checkbox: {
-    width: 18,
-    height: 18,
-    borderRadius: 4,
+    backgroundColor: "#F8FAFC",
     borderWidth: 1,
-    borderColor: "#CBD5E1",
-    marginRight: 8,
-  },
-  checkboxLabel: {
-    color: "#94A3B8",
-    fontSize: 13,
-  },
-  signupButton: {
-    backgroundColor: "#0B1E8A",
-    padding: 16,
+    borderColor: "#E2E8F0",
+    padding: 15,
     borderRadius: 12,
+    justifyContent: "center",
     alignItems: "center",
-    elevation: 4,
+    marginBottom: 25,
   },
-  signupButtonText: {
-    color: "white",
-    fontSize: 16,
+  googleButtonText: {
+    color: "#1E293B",
     fontWeight: "bold",
+    marginLeft: 10,
   },
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
+    marginBottom: 25,
   },
   divider: {
     flex: 1,
@@ -250,23 +181,79 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 15,
     color: "#94A3B8",
-    fontSize: 11,
+    fontSize: 12,
   },
-  googleButton: {
-    flexDirection: "row",
-    backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    padding: 14,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
+  inputWrapper: {
     marginBottom: 20,
   },
-  googleButtonText: {
+  inputLabel: {
     color: "#1E293B",
-    fontWeight: "bold",
-    marginLeft: 10,
     fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#0B1E8A",
+    paddingVertical: 10,
+    fontSize: 16,
+    color: "#1E293B",
+  },
+  extraActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 30,
+    marginTop: 10,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    marginRight: 8,
+  },
+  checkboxLabel: {
+    color: "#94A3B8",
+    fontSize: 14,
+  },
+  forgotPassword: {
+    color: "#0B1E8A",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  loginButton: {
+    backgroundColor: "#0B1E8A",
+    padding: 18,
+    borderRadius: 15,
+    alignItems: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+  },
+  loginButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  signupPrompt: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 25,
+    paddingBottom: 20,
+  },
+  signupText: {
+    color: "#64748B",
+  },
+  signupLink: {
+    color: "#0B1E8A",
+    fontWeight: "bold",
   }
 });

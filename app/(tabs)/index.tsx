@@ -3,15 +3,23 @@ import {
   Text,
   ImageBackground,
   ScrollView,
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { COURSES } from "../../constants/courses";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Home() {
+  const { userName } = useAuth();
 
   const user = {
-    name: "Thiago",
+    name: userName,
     license: "BR-ANAC-742615"
   };
+
+  const router = useRouter();
 
   return (
     <View style={{ flex: 1, backgroundColor: "#0B1E8A" }}>
@@ -58,170 +66,220 @@ export default function Home() {
 
         <ScrollView showsVerticalScrollIndicator={false}>
 
-          {/* TITLE */}
           <View style={{
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center"
           }}>
             <Text style={{
-              fontSize: 20,
-              fontWeight: "bold"
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "#1A202C"
             }}>
-              Course
+              Cursos
             </Text>
 
-            <Text style={{ fontSize: 20 }}>
-              ✕
-            </Text>
+            <TouchableOpacity>
+              <Ionicons name="close" size={28} color="#1A202C" />
+            </TouchableOpacity>
           </View>
 
 
-          {/* CARDS */}
           <View style={{
             flexDirection: "row",
             justifyContent: "space-between",
             marginTop: 20
           }}>
 
-            <View style={{
-              backgroundColor: "#444",
-              borderRadius: 15,
-              padding: 20,
-              width: "48%"
-            }}>
-              <Text style={{ color: "white" }}>
-                Courses
-              </Text>
+            {/* CARD 1: PRÓXIMO OBJETIVO */}
+            <TouchableOpacity 
+              onPress={() => router.push("/(tabs)/profile" as any)}
+              activeOpacity={0.8}
+              style={{
+                backgroundColor: "#0B1E8A",
+                borderRadius: 15,
+                padding: 15,
+                width: "48%",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <MaterialCommunityIcons name="medal-outline" size={32} color="#F59E0B" />
+              <View style={{ marginLeft: 8, flex: 1 }}>
+                <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: 10, fontWeight: "bold" }}>PRÓXIMO OBJETIVO</Text>
+                <Text style={{ color: "white", fontSize: 12, fontWeight: "bold" }} numberOfLines={1}>Ás da ANAC</Text>
+                <Text style={{ color: "#F59E0B", fontSize: 10, fontWeight: "600" }}>Falta 1 Simulado</Text>
+              </View>
+            </TouchableOpacity>
 
-              <Text style={{
-                color: "white",
-                marginTop: 5
-              }}>
-                2016
-              </Text>
-            </View>
-
-
-            <View style={{
-              backgroundColor: "#444",
-              borderRadius: 15,
-              padding: 20,
-              width: "48%"
-            }}>
-              <Text style={{ color: "white" }}>
-                Formations
-              </Text>
-
-              <Text style={{
-                color: "white",
-                marginTop: 5
-              }}>
-                800
-              </Text>
-            </View>
-
+            {/* CARD 2: RETOMAR AULA */}
+            <TouchableOpacity 
+              onPress={() => router.push("/course/1" as any)} // Id fixo para exemplo, levaria para a última aula
+              activeOpacity={0.8}
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: 15,
+                padding: 15,
+                width: "48%",
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "#E2E8F0"
+              }}
+            >
+              <MaterialCommunityIcons name="play-circle" size={32} color="#0B1E8A" />
+              <View style={{ marginLeft: 8, flex: 1 }}>
+                <Text style={{ color: "#64748B", fontSize: 10, fontWeight: "bold" }}>RETOMAR AULA</Text>
+                <Text style={{ color: "#1E293B", fontSize: 12, fontWeight: "bold" }} numberOfLines={1}>Nuvens e Visib.</Text>
+                <Text style={{ color: "#0B1E8A", fontSize: 10, fontWeight: "600" }}>Meteorologia</Text>
+              </View>
+            </TouchableOpacity>
           </View>
 
 
-          {/* ICON BUTTONS */}
           <View style={{
             flexDirection: "row",
             justifyContent: "space-between",
             marginTop: 25
           }}>
 
-            {[1,2,3,4].map((i)=>(
-              <View key={i} style={{ alignItems:"center" }}>
-
+            {[
+              { label: "Cronograma", icon: "calendar-check", path: "/schedule" },
+              { label: "Biblioteca", icon: "book-open-variant", path: "/library" },
+              { label: "Desempenho", icon: "chart-bar", path: "/performance" },
+              { label: "Planos PRO", icon: "crown", color: "#B45309", path: "/plans" }
+            ].map((item, i) => (
+              <TouchableOpacity 
+                key={i} 
+                activeOpacity={0.7}
+                onPress={() => item.path && router.push(item.path as any)}
+                style={{ alignItems: "center", width: "23%" }}
+              >
                 <View style={{
-                  width:60,
-                  height:60,
-                  borderRadius:30,
-                  backgroundColor:"#D9D9D9",
-                  justifyContent:"center",
-                  alignItems:"center"
+                  width: 65,
+                  height: 65,
+                  borderRadius: 35,
+                  backgroundColor: item.label === "Planos PRO" ? "#FEF3C7" : "#D9E2EC",
+                  justifyContent: "center",
+                  alignItems: "center"
                 }}>
-                  <Text>{"</>"}</Text>
+                  <MaterialCommunityIcons 
+                    name={item.icon as any} 
+                    size={32} 
+                    color={item.color || "#475569"} 
+                  />
                 </View>
-
-                <Text style={{ marginTop:8 }}>
-                  Code
+                <Text style={{ 
+                  marginTop: 8, 
+                  textAlign: "center", 
+                  fontSize: 11,
+                  fontWeight: "600",
+                  color: "#1A202C"
+                }}>
+                  {item.label}
                 </Text>
-
-              </View>
+              </TouchableOpacity>
             ))}
 
           </View>
 
 
           {/* FORMATIONS TITLE */}
-          <Text style={{
-            marginTop: 30,
-            fontSize: 18,
-            fontWeight: "bold"
-          }}>
-            Formations
-          </Text>
-
-
-          {/* COURSE CARD */}
-          <View style={{
-            backgroundColor: "white",
-            borderRadius: 20,
-            padding: 15,
-            marginTop: 15
-          }}>
-
-            <Image
-              source={require("../../assets/images/course.jpeg")}
-              style={{
-                width: "100%",
-                height: 120,
-                borderRadius: 15
-              }}
-            />
-
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 30 }}>
+            <MaterialCommunityIcons name="playlist-play" size={32} color="black" />
             <Text style={{
+              fontSize: 22,
               fontWeight: "bold",
-              marginTop: 10
+              marginLeft: 10
             }}>
-              Design System
+              Formações
             </Text>
-
-            <Text style={{
-              color: "gray",
-              marginTop: 5
-            }}>
-              In this course you'll learn everything there is to know about Design Systems
-            </Text>
-
-
-            {/* PROGRESS BAR */}
-            <View style={{
-              height: 6,
-              backgroundColor: "#E0E0E0",
-              borderRadius: 5,
-              marginTop: 15
-            }}>
-              <View style={{
-                width: "80%",
-                height: 6,
-                backgroundColor: "#2F6BFF",
-                borderRadius: 5
-              }} />
-            </View>
-
-
-            <Text style={{
-              alignSelf: "flex-end",
-              marginTop: 5,
-              fontSize: 12
-            }}>
-              8/10 courses
-            </Text>
-
           </View>
+
+
+          {Object.values(COURSES).map((course) => (
+            <TouchableOpacity 
+              key={course.id}
+              onPress={() => !course.locked && router.push(`/course/${course.id}` as any)}
+              activeOpacity={course.locked ? 1 : 0.9}
+              style={{
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 15,
+                marginTop: 15,
+                opacity: course.locked ? 0.6 : 1
+              }}
+            >
+              <View>
+                <Image
+                  source={course.bannerImage}
+                  style={{
+                    width: "100%",
+                    height: 120,
+                    borderRadius: 15
+                  }}
+                />
+                {course.locked && (
+                  <View style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "rgba(0,0,0,0.3)",
+                    borderRadius: 15,
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}>
+                    <MaterialCommunityIcons name="lock" size={40} color="white" />
+                  </View>
+                )}
+              </View>
+
+              <Text style={{
+                fontWeight: "bold",
+                marginTop: 10,
+                color: "#1A202C"
+              }}>
+                {course.title}
+              </Text>
+
+              <Text style={{
+                color: "gray",
+                marginTop: 5,
+                fontSize: 13
+              }} numberOfLines={3}>
+                {course.description}
+              </Text>
+
+
+              {/* PROGRESS BAR */}
+              <View style={{
+                height: 6,
+                backgroundColor: "#E0E0E0",
+                borderRadius: 5,
+                marginTop: 15
+              }}>
+                <View style={{
+                  width: `${(course.progress || 0) * 100}%`,
+                  height: 6,
+                  backgroundColor: course.locked ? "#CBD5E1" : "#2F6BFF",
+                  borderRadius: 5
+                }} />
+              </View>
+
+
+              <Text style={{
+                alignSelf: "flex-end",
+                marginTop: 5,
+                fontSize: 12,
+                color: "#64748B"
+              }}>
+                {course.completedLessons}/{course.totalLessons} aulas
+              </Text>
+
+            </TouchableOpacity>
+          ))}
 
         </ScrollView>
 
